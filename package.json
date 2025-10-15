@@ -1,0 +1,31 @@
+{
+  "name": "chatanalyser",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Bishoy334/ChatAnalyser.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bishoy334/ChatAnalyser/issues"
+  },
+  "homepage": "https://github.com/Bishoy334/ChatAnalyser#readme",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "dictionary-en": "^4.0.0",
+    "emoji-regex": "^10.6.0",
+    "grapheme-splitter": "^1.0.4",
+    "iconv-lite": "^0.7.0",
+    "nspell": "^2.1.5"
+  }
+}
