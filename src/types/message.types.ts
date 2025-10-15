@@ -12,7 +12,7 @@ export type Message = {
     isSystem: boolean;
     isMediaNotice: boolean;
     mediaType?: string;
-    platform: 'whatsapp' | 'instagram';
+    platform: 'whatsapp' | 'instagram' | 'android_messages';
     instagramData?: {
         reactions?: Array<{
             reaction: string;
@@ -47,7 +47,7 @@ export type Message = {
 export type ParsedChat = {
     messages: Message[];
     participants: Set<string>;
-    platform: 'whatsapp' | 'instagram';
+    platform: 'whatsapp' | 'instagram' | 'android_messages';
     title?: string;
     
 }

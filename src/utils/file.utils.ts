@@ -12,7 +12,7 @@ import path from "path";
 /**
  * Detects the platform type based on file extension and content
  */
-export function detectPlatform(filePath: string, content: string): 'whatsapp' | 'instagram' {
+export function detectPlatform(filePath: string, content: string): 'whatsapp' | 'instagram' | 'android_messages' {
     const ext = path.extname(filePath).toLowerCase();
     const basename = path.basename(filePath, ext).toLowerCase();
   
@@ -22,6 +22,9 @@ export function detectPlatform(filePath: string, content: string): 'whatsapp' | 
     }
     if (basename.includes('.insta') || basename.includes('_insta') || basename.includes('.instagram') || basename.includes('_instagram')) {
       return 'instagram';
+    }
+    if (basename.includes('.android') || basename.includes('_android') || basename.includes('.sms') || basename.includes('_sms')) {
+      return 'android_messages';
     }
   
     // Fallback to content detection
@@ -38,6 +41,12 @@ export function detectPlatform(filePath: string, content: string): 'whatsapp' | 
         // Not valid JSON, treat as WhatsApp
       }
     }
+    
+    // Check for Android Messages XML structure
+    if (ext === '.xml' && content.includes('<smses>')) {
+      return 'android_messages';
+    }
+    
     return 'whatsapp';
 }
 
@@ -74,7 +83,16 @@ export function discoverChatFiles(directoryPath: string): string[] {
             true
           );
           
-          if (isWhatsApp || isInstagram) {
+          const isAndroidMessages = ext === '.xml' && (
+            basename.includes('.android') || 
+            basename.includes('_android') || 
+            basename.includes('.sms') || 
+            basename.includes('_sms') ||
+            // Also include any .xml file that might be Android Messages (will be validated later)
+            true
+          );
+          
+          if (isWhatsApp || isInstagram || isAndroidMessages) {
             chatFiles.push(fullPath);
           }
         }
