@@ -84,39 +84,39 @@ export function countEmojis(text: string): number {
  * Checks if a message represents a media file notice from WhatsApp
  */
 export function getMediaType(text: string): string | null {
-    const normalizedText = stripControlMarks(text).trim().toLowerCase();
+    const normalisedText = stripControlMarks(text).trim().toLowerCase();
   
     // Common WhatsApp media notice variants
-    if (normalizedText === "image omitted" || normalizedText === "<image omitted>") {
+    if (normalisedText === "image omitted" || normalisedText === "<image omitted>") {
         return "image";
-    } else if (normalizedText === "video omitted" || normalizedText === "<video omitted>") {
+    } else if (normalisedText === "video omitted" || normalisedText === "<video omitted>") {
         return "video";
-    } else if (normalizedText === "audio omitted" || normalizedText === "<audio omitted>") {
+    } else if (normalisedText === "audio omitted" || normalisedText === "<audio omitted>") {
         return "audio";
-    } else if (normalizedText === "sticker omitted" || normalizedText === "<sticker omitted>") {
+    } else if (normalisedText === "sticker omitted" || normalisedText === "<sticker omitted>") {
         return "sticker";
-    } else if (normalizedText === "document omitted" || normalizedText === "<document omitted>") {
+    } else if (normalisedText === "document omitted" || normalisedText === "<document omitted>") {
         return "document";
-    } else if (normalizedText === "gif omitted" || normalizedText === "<gif omitted>") {
+    } else if (normalisedText === "gif omitted" || normalisedText === "<gif omitted>") {
         return "gif";
-    } else if (normalizedText === "<media omitted>" || normalizedText === "media omitted") {
+    } else if (normalisedText === "<media omitted>" || normalisedText === "media omitted") {
         return "media";
     }
     
     // Check if the text contains media patterns (for cases like "Sender: image omitted")
-    if (normalizedText.includes("image omitted")) {
+    if (normalisedText.includes("image omitted")) {
         return "image";
-    } else if (normalizedText.includes("video omitted")) {
+    } else if (normalisedText.includes("video omitted")) {
         return "video";
-    } else if (normalizedText.includes("audio omitted")) {
+    } else if (normalisedText.includes("audio omitted")) {
         return "audio";
-    } else if (normalizedText.includes("sticker omitted")) {
+    } else if (normalisedText.includes("sticker omitted")) {
         return "sticker";
-    } else if (normalizedText.includes("document omitted")) {
+    } else if (normalisedText.includes("document omitted")) {
         return "document";
-    } else if (normalizedText.includes("gif omitted")) {
+    } else if (normalisedText.includes("gif omitted")) {
         return "gif";
-    } else if (normalizedText.includes("media omitted")) {
+    } else if (normalisedText.includes("media omitted")) {
         return "media";
     }
     

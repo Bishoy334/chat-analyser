@@ -1,23 +1,24 @@
-import readline from "node:readline";
 import type { ParsedChat } from '../types';
 import { PLATFORM_PRIORITY } from '../utils/constants';
 import { 
-    colorize, 
+    colourise, 
     logInfo, 
     logWarning, 
     logSuccess, 
     logError,
-    formatNumber
+    formatNumber,
+    askQuestion
 } from '../cli/cli.utils';
+import type { Interface as ReadlineInterface } from 'node:readline';
 
 // ============================================================================
 // NAME NORMALIZATION
 // ============================================================================
 
 /**
- * Normalizes participant names across platforms to handle different contact names
+ * Normalises participant names across platforms to handle different contact names
  */
-export async function normalizeParticipantNames(parsedChats: ParsedChat[]): Promise<ParsedChat[]> {
+export async function normaliseParticipantNames(parsedChats: ParsedChat[], rl?: ReadlineInterface): Promise<ParsedChat[]> {
     // Collect all unique participant names from all platforms
     const allNames = new Set<string>();
     const namesByPlatform = new Map<string, Set<string>>();
@@ -40,7 +41,7 @@ export async function normalizeParticipantNames(parsedChats: ParsedChat[]): Prom
     // If we have more total participants than the largest single platform,
     // we likely have name variations that need mapping
     if (totalParticipants > maxParticipantsPerPlatform) {
-        console.log(`\n${colorize('Found potential name variations:', 'yellow')}`);
+        console.log(`\n${colourise('Found potential name variations:', 'yellow')}`);
     
         // Find names that appear in only one platform
         const singlePlatformNames = new Map<string, string>(); // name -> platform
@@ -66,26 +67,50 @@ export async function normalizeParticipantNames(parsedChats: ParsedChat[]): Prom
     
         // Show only the names that need mapping
         for (const [name, platform] of singlePlatformNames) {
-            console.log(`   ${colorize(name, 'yellow')} (${colorize(platform, 'cyan')})`);
+            console.log(`   ${colourise(name, 'yellow')} (${colourise(platform, 'cyan')})`);
         }
     
         // Interactive mapping for single-platform names
-        const nameMappings = new Map<string, string>(); // original -> normalized
+        const nameMappings = new Map<string, string>(); // original -> normalised
         const processedNames = new Set<string>();
-    
-        // Create readline interface for interactive input
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
-        });
         
-        const askQuestion = (question: string): Promise<string> => {
-            return new Promise((resolve) => {
-                rl.question(question, (answer) => {
-                    resolve(answer.trim());
-                });
-            });
-        };
+        // If no readline interface provided, use automatic mapping only
+        if (!rl) {
+            console.log(`\n${colourise('Non-interactive mode:', 'blue')} Using automatic name mapping only`);
+            
+            for (const [originalName, platform] of singlePlatformNames) {
+                if (processedNames.has(originalName)) continue;
+                
+                const allOtherNames = Array.from(allNames).filter(name => name !== originalName);
+                const suggestedMatch = findBestMatch(originalName, allOtherNames, namesByPlatform);
+                
+                if (suggestedMatch) {
+                    // Check if we should reverse the mapping based on platform priority
+                    const originalPlatform = platform;
+                    const suggestedPlatform = getPlatformForName(suggestedMatch, namesByPlatform);
+                    const originalPriority = PLATFORM_PRIORITY[originalPlatform as keyof typeof PLATFORM_PRIORITY] || 999;
+                    const suggestedPriority = PLATFORM_PRIORITY[suggestedPlatform as keyof typeof PLATFORM_PRIORITY] || 999;
+                    
+                    let fromName, toName;
+                    if (originalPriority < suggestedPriority) {
+                        fromName = suggestedMatch;
+                        toName = originalName;
+                    } else {
+                        fromName = originalName;
+                        toName = suggestedMatch;
+                    }
+                    
+                    console.log(`${colourise('✓', 'green')} Auto-mapped ${colourise(fromName, 'yellow')} → ${colourise(toName, 'green')}`);
+                    nameMappings.set(fromName, toName);
+                    processedNames.add(fromName);
+                    processedNames.add(toName);
+                } else {
+                    console.log(`${colourise('•', 'gray')} Keeping ${colourise(originalName, 'yellow')} separate (no match found)`);
+                    nameMappings.set(originalName, originalName);
+                    processedNames.add(originalName);
+                }
+            }
+        } else {
     
         for (const [originalName, platform] of singlePlatformNames) {
             if (processedNames.has(originalName)) continue;
@@ -113,11 +138,11 @@ export async function normalizeParticipantNames(parsedChats: ParsedChat[]): Prom
                 toName = suggestedMatch;
                 }
                 
-                console.log(`\n${colorize('Suggested:', 'blue')} ${colorize(fromName, 'yellow')} → ${colorize(toName, 'green')}`);
-                const confirm = await askQuestion(`Accept? (y/n): `);
+                console.log(`\n${colourise('Suggested:', 'blue')} ${colourise(fromName, 'yellow')} → ${colourise(toName, 'green')}`);
+                const confirm = await askQuestion(rl, `Accept? (y/n): `);
                 
                 if (confirm.toLowerCase() === 'y' || confirm.toLowerCase() === 'yes') {
-                console.log(`${colorize('✓', 'green')} Mapped ${colorize(fromName, 'yellow')} → ${colorize(toName, 'green')}`);
+                console.log(`${colourise('✓', 'green')} Mapped ${colourise(fromName, 'yellow')} → ${colourise(toName, 'green')}`);
                 nameMappings.set(fromName, toName);
                 processedNames.add(fromName);
                 processedNames.add(toName);
@@ -126,24 +151,23 @@ export async function normalizeParticipantNames(parsedChats: ParsedChat[]): Prom
             }
         
             // If no auto-match or user rejected, ask for manual input
-            const manualInput = await askQuestion(`\nEnter correct name for ${colorize(originalName, 'yellow')} (or Enter to keep separate): `);
+            const manualInput = await askQuestion(rl, `Enter correct name for ${colourise(originalName, 'yellow')} (or Enter to keep separate): `);
         
             if (manualInput && manualInput !== originalName) {
-                console.log(`${colorize('✓', 'green')} Mapped ${colorize(originalName, 'yellow')} → ${colorize(manualInput, 'green')}`);
+                console.log(`${colourise('✓', 'green')} Mapped ${colourise(originalName, 'yellow')} → ${colourise(manualInput, 'green')}`);
                 nameMappings.set(originalName, manualInput);
                 processedNames.add(originalName);
                 processedNames.add(manualInput);
             } else {
-                console.log(`${colorize('•', 'gray')} Keeping ${colorize(originalName, 'yellow')} separate`);
+                console.log(`${colourise('•', 'gray')} Keeping ${colourise(originalName, 'yellow')} separate`);
                 nameMappings.set(originalName, originalName);
                 processedNames.add(originalName);
             }
         }
-    
-        rl.close();
+        }
         
         // Apply name mappings to all chats
-        const normalizedChats = parsedChats.map(chat => ({
+        const normalisedChats = parsedChats.map(chat => ({
             ...chat,
             participants: new Set(Array.from(chat.participants).map(name => 
                 nameMappings.get(name) || name
@@ -154,7 +178,7 @@ export async function normalizeParticipantNames(parsedChats: ParsedChat[]): Prom
             }))
         }));
     
-        return normalizedChats;
+        return normalisedChats;
     } else {
         return parsedChats;
     }

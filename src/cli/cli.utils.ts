@@ -51,7 +51,7 @@ export const colors = {
     bgBlue: '\x1b[44m'
 };
 
-export function colorize(text: string, color: keyof typeof colors): string {
+export function colourise(text: string, color: keyof typeof colors): string {
     return `${colors[color]}${text}${colors.reset}`;
 }
 
@@ -104,7 +104,7 @@ export class LoadingSpinner {
     start(): void {
         process.stdout.write('\x1b[?25l'); // Hide cursor
         this.interval = setInterval(() => {
-            process.stdout.write(`\r${colorize(this.frames[this.currentFrame], 'cyan')} ${this.message}`);
+            process.stdout.write(`\r${colourise(this.frames[this.currentFrame], 'cyan')} ${this.message}`);
             this.currentFrame = (this.currentFrame + 1) % this.frames.length;
         }, 100);
     }
@@ -151,7 +151,7 @@ export class ProgressBar {
         const filled = Math.round((this.current / this.total) * this.width);
         const bar = '█'.repeat(filled) + '░'.repeat(this.width - filled);
         
-        process.stdout.write(`\r${colorize('Progress:', 'blue')} [${bar}] ${percentage}% (${this.current}/${this.total}) ${this.message}`);
+        process.stdout.write(`\r${colourise('Progress:', 'blue')} [${bar}] ${percentage}% (${this.current}/${this.total}) ${this.message}`);
         
         if (this.current >= this.total) {
             process.stdout.write('\n');
@@ -164,30 +164,30 @@ export class ProgressBar {
 // ============================================================================
 
 export function logSuccess(message: string): void {
-    console.log(`${colorize(SUCCESS_ICON, 'green')} ${colorize(message, 'green')}`);
+    console.log(`${colourise(SUCCESS_ICON, 'green')} ${colourise(message, 'green')}`);
 }
 
 export function logError(message: string): void {
-    console.log(`${colorize(ERROR_ICON, 'red')} ${colorize(message, 'red')}`);
+    console.log(`${colourise(ERROR_ICON, 'red')} ${colourise(message, 'red')}`);
 }
 
 export function logInfo(message: string): void {
-    console.log(`${colorize(INFO_ICON, 'blue')} ${colorize(message, 'blue')}`);
+    console.log(`${colourise(INFO_ICON, 'blue')} ${colourise(message, 'blue')}`);
 }
 
 export function logWarning(message: string): void {
-    console.log(`${colorize(WARNING_ICON, 'yellow')} ${colorize(message, 'yellow')}`);
+    console.log(`${colourise(WARNING_ICON, 'yellow')} ${colourise(message, 'yellow')}`);
 }
 
 export function logHeader(message: string): void {
     const line = '═'.repeat(message.length + 4);
-    console.log(`\n${colorize(line, 'cyan')}`);
-    console.log(`${colorize('  ' + message + '  ', 'cyan')}`);
-    console.log(`${colorize(line, 'cyan')}\n`);
+    console.log(`\n${colourise(line, 'cyan')}`);
+    console.log(`${colourise('  ' + message + '  ', 'cyan')}`);
+    console.log(`${colourise(line, 'cyan')}\n`);
 }
 
 export function logSubHeader(message: string): void {
-    console.log(`\n${colorize('▶ ' + message, 'magenta')}`);
+    console.log(`\n${colourise('▶ ' + message, 'magenta')}`);
 }
 
 // ============================================================================
@@ -206,7 +206,7 @@ export function createTable(columns: TableColumn[], data: string[][]): void {
     const separator = columns.map(col => '─'.repeat(col.width)).join('─┼─');
     
     console.log(`┌─${separator}─┐`);
-    console.log(`│ ${colorize(headerRow, 'bright')} │`);
+    console.log(`│ ${colourise(headerRow, 'bright')} │`);
     console.log(`├─${separator}─┤`);
     
     // Create data rows
@@ -238,47 +238,47 @@ export function createTable(columns: TableColumn[], data: string[][]): void {
 export function showUsage(): void {
     console.log(ASCII_LOGO);
     
-    console.log(`${colorize('USAGE:', 'bright')}`);
-    console.log(`  ${colorize('npx tsx index.ts', 'cyan')} ${colorize('[options]', 'yellow')} ${colorize('[folder_path]', 'yellow')} ${colorize('[output.json]', 'dim')}`);
+    console.log(`${colourise('USAGE:', 'bright')}`);
+    console.log(`  ${colourise('npx tsx index.ts', 'cyan')} ${colourise('[options]', 'yellow')} ${colourise('[folder_path]', 'yellow')} ${colourise('[output.json]', 'dim')}`);
     console.log();
     
-    console.log(`${colorize('OPTIONS:', 'bright')}`);
-    console.log(`  ${colorize('--interactive, -i', 'cyan')}    Launch interactive mode (default if no arguments)`);
-    console.log(`  ${colorize('--help, -h', 'cyan')}           Show this help message`);
+    console.log(`${colourise('OPTIONS:', 'bright')}`);
+    console.log(`  ${colourise('--interactive, -i', 'cyan')}    Launch interactive mode (default if no arguments)`);
+    console.log(`  ${colourise('--help, -h', 'cyan')}           Show this help message`);
     console.log();
     
-    console.log(`${colorize('ARGUMENTS:', 'bright')}`);
-    console.log(`  ${colorize('folder_path', 'yellow')}    Directory containing chat export files`);
-    console.log(`  ${colorize('output.json', 'dim')}       Optional output file path (default: hierarchical_analysis.json)`);
+    console.log(`${colourise('ARGUMENTS:', 'bright')}`);
+    console.log(`  ${colourise('folder_path', 'yellow')}    Directory containing chat export files`);
+    console.log(`  ${colourise('output.json', 'dim')}       Optional output file path (default: hierarchical_analysis.json)`);
     console.log();
     
-    console.log(`${colorize('EXAMPLES:', 'bright')}`);
-    console.log(`  ${colorize('npx tsx index.ts', 'cyan')}                              # Launch interactive mode`);
-    console.log(`  ${colorize('npx tsx index.ts --interactive', 'cyan')}                # Launch interactive mode`);
-    console.log(`  ${colorize('npx tsx index.ts ./chats/', 'cyan')}                     # Analyze all chats in folder`);
-    console.log(`  ${colorize('npx tsx index.ts ./chats/ analysis.json', 'cyan')}       # Specify output file`);
-    console.log(`  ${colorize('npx tsx index.ts ~/Downloads/chat_exports/', 'cyan')}    # Use absolute path`);
+    console.log(`${colourise('EXAMPLES:', 'bright')}`);
+    console.log(`  ${colourise('npx tsx index.ts', 'cyan')}                              # Launch interactive mode`);
+    console.log(`  ${colourise('npx tsx index.ts --interactive', 'cyan')}                # Launch interactive mode`);
+    console.log(`  ${colourise('npx tsx index.ts ./chats/', 'cyan')}                     # Analyse all chats in folder`);
+    console.log(`  ${colourise('npx tsx index.ts ./chats/ analysis.json', 'cyan')}       # Specify output file`);
+    console.log(`  ${colourise('npx tsx index.ts ~/Downloads/chat_exports/', 'cyan')}    # Use absolute path`);
     console.log();
     
-    console.log(`${colorize('SUPPORTED PLATFORMS:', 'bright')}`);
-    console.log(`  ${colorize('WhatsApp', 'green')}     .txt files (chat exports)`);
-    console.log(`  ${colorize('Instagram', 'magenta')}   .json files (message exports)`);
-    console.log(`  ${colorize('Android Messages', 'blue')} .xml files (SMS/MMS exports)`);
+    console.log(`${colourise('SUPPORTED PLATFORMS:', 'bright')}`);
+    console.log(`  ${colourise('WhatsApp', 'green')}     .txt files (chat exports)`);
+    console.log(`  ${colourise('Instagram', 'magenta')}   .json files (message exports)`);
+    console.log(`  ${colourise('Android Messages', 'blue')} .xml files (SMS/MMS exports)`);
     console.log();
     
-    console.log(`${colorize('FILE PATTERNS:', 'bright')}`);
+    console.log(`${colourise('FILE PATTERNS:', 'bright')}`);
     console.log(`  Files with platform indicators in filename:`);
-    console.log(`    ${colorize('.whatsapp', 'green')}, ${colorize('_whatsapp', 'green')}     → WhatsApp`);
-    console.log(`    ${colorize('.insta', 'magenta')}, ${colorize('_insta', 'magenta')}, ${colorize('.instagram', 'magenta')} → Instagram`);
-    console.log(`    ${colorize('.android', 'blue')}, ${colorize('_android', 'blue')}, ${colorize('.sms', 'blue')} → Android Messages`);
+    console.log(`    ${colourise('.whatsapp', 'green')}, ${colourise('_whatsapp', 'green')}     → WhatsApp`);
+    console.log(`    ${colourise('.insta', 'magenta')}, ${colourise('_insta', 'magenta')}, ${colourise('.instagram', 'magenta')} → Instagram`);
+    console.log(`    ${colourise('.android', 'blue')}, ${colourise('_android', 'blue')}, ${colourise('.sms', 'blue')} → Android Messages`);
     console.log();
     
-    console.log(`${colorize('OUTPUT:', 'bright')}`);
-    console.log(`  ${colorize('JSON Analysis', 'cyan')}    Comprehensive metrics and statistics`);
-    console.log(`  ${colorize('HTML Report', 'cyan')}      Interactive dashboard with visualizations`);
+    console.log(`${colourise('OUTPUT:', 'bright')}`);
+    console.log(`  ${colourise('JSON Analysis', 'cyan')}    Comprehensive metrics and statistics`);
+    console.log(`  ${colourise('HTML Report', 'cyan')}      Interactive dashboard with visualizations`);
     console.log();
     
-    console.log(`${colorize('FEATURES:', 'bright')}`);
+    console.log(`${colourise('FEATURES:', 'bright')}`);
     console.log(`  • Cross-platform chat analysis and merging`);
     console.log(`  • Participant name normalization`);
     console.log(`  • Hierarchical analysis (overview, per-platform, per-person)`);
@@ -288,7 +288,7 @@ export function showUsage(): void {
     console.log(`  • Interactive HTML dashboard`);
     console.log();
     
-    console.log(`${colorize('For more information, visit:', 'dim')} https://github.com/Bishoy334/ChatAnalyser`);
+    console.log(`${colourise('For more information, visit:', 'dim')} https://github.com/Bishoy334/ChatAnalyser`);
 }
 
 // ============================================================================
@@ -299,15 +299,15 @@ export function showError(message: string, details?: string): void {
     console.log();
     logError(message);
     if (details) {
-        console.log(`${colorize('Details:', 'dim')} ${details}`);
+        console.log(`${colourise('Details:', 'dim')} ${details}`);
     }
     console.log();
-    console.log(`${colorize('Run with no arguments to see usage information.', 'dim')}`);
+    console.log(`${colourise('Run with no arguments to see usage information.', 'dim')}`);
     console.log();
 }
 
 export function showPlatformInfo(): void {
-    console.log(`${colorize('PLATFORM SUPPORT:', 'bright')}`);
+    console.log(`${colourise('PLATFORM SUPPORT:', 'bright')}`);
     console.log();
     
     const platforms = [
@@ -335,10 +335,10 @@ export function showPlatformInfo(): void {
     ];
     
     platforms.forEach(platform => {
-        console.log(`${colorize(platform.name, platform.color as keyof typeof colors)}`);
+        console.log(`${colourise(platform.name, platform.color as keyof typeof colors)}`);
         console.log(`  Extensions: ${platform.extensions.join(', ')}`);
         console.log(`  Description: ${platform.description}`);
-        console.log(`  Example: ${colorize(platform.example, 'dim')}`);
+        console.log(`  Example: ${colourise(platform.example, 'dim')}`);
         console.log();
     });
 }
@@ -356,7 +356,7 @@ export function createReadlineInterface(): readline.Interface {
 
 export function askQuestion(rl: readline.Interface, question: string): Promise<string> {
     return new Promise((resolve) => {
-        rl.question(`${colorize('?', 'cyan')} ${question}`, (answer) => {
+        rl.question(`${colourise('?', 'cyan')} ${question}`, (answer) => {
             resolve(answer.trim());
         });
     });
@@ -364,17 +364,17 @@ export function askQuestion(rl: readline.Interface, question: string): Promise<s
 
 export function askChoice(rl: readline.Interface, question: string, choices: string[]): Promise<string> {
     return new Promise((resolve) => {
-        console.log(`\n${colorize(question, 'bright')}`);
+        console.log(`\n${colourise(question, 'bright')}`);
         choices.forEach((choice, index) => {
-            console.log(`  ${colorize((index + 1).toString(), 'cyan')}. ${choice}`);
+            console.log(`  ${colourise((index + 1).toString(), 'cyan')}. ${choice}`);
         });
         
-        rl.question(`\n${colorize('?', 'cyan')} Enter your choice (1-${choices.length}): `, (answer) => {
+        rl.question(`\n${colourise('?', 'cyan')} Enter your choice (1-${choices.length}): `, (answer) => {
             const choiceIndex = parseInt(answer.trim()) - 1;
             if (choiceIndex >= 0 && choiceIndex < choices.length) {
                 resolve(choices[choiceIndex]);
             } else {
-                console.log(`${colorize('Invalid choice. Please try again.', 'red')}`);
+                console.log(`${colourise('Invalid choice. Please try again.', 'red')}`);
                 resolve(askChoice(rl, question, choices));
             }
         });
@@ -382,31 +382,31 @@ export function askChoice(rl: readline.Interface, question: string, choices: str
 }
 
 export function showMainMenu(): void {
-    console.log(`\n${colorize('MAIN MENU', 'bright')}`);
-    console.log(`${colorize('═'.repeat(50), 'cyan')}`);
-    console.log(`${colorize('1.', 'cyan')} Analyze chat files from a directory`);
-    console.log(`${colorize('2.', 'cyan')} Browse available sample datasets`);
-    console.log(`${colorize('3.', 'cyan')} Show platform information`);
-    console.log(`${colorize('4.', 'cyan')} Show usage information`);
-    console.log(`${colorize('5.', 'cyan')} Exit`);
-    console.log(`${colorize('═'.repeat(50), 'cyan')}`);
+    console.log(`\n${colourise('MAIN MENU', 'bright')}`);
+    console.log(`${colourise('═'.repeat(50), 'cyan')}`);
+    console.log(`${colourise('1.', 'cyan')} Analyse chat files from a directory`);
+    console.log(`${colourise('2.', 'cyan')} Browse available sample datasets`);
+    console.log(`${colourise('3.', 'cyan')} Show platform information`);
+    console.log(`${colourise('4.', 'cyan')} Show usage information`);
+    console.log(`${colourise('5.', 'cyan')} Exit`);
+    console.log(`${colourise('═'.repeat(50), 'cyan')}`);
 }
 
 export function showFolderBrowser(folders: string[]): void {
-    console.log(`\n${colorize('AVAILABLE DATASETS', 'bright')}`);
-    console.log(`${colorize('═'.repeat(50), 'cyan')}`);
+    console.log(`\n${colourise('AVAILABLE DATASETS', 'bright')}`);
+    console.log(`${colourise('═'.repeat(50), 'cyan')}`);
     
     if (folders.length === 0) {
-        console.log(`${colorize('No sample datasets found in assets directory.', 'yellow')}`);
-        console.log(`${colorize('You can still analyze your own chat files using option 1.', 'dim')}`);
+        console.log(`${colourise('No sample datasets found in assets directory.', 'yellow')}`);
+        console.log(`${colourise('You can still analyse your own chat files using option 1.', 'dim')}`);
     } else {
         folders.forEach((folder, index) => {
             const folderName = folder.split('/').pop() || folder;
-            console.log(`${colorize((index + 1).toString(), 'cyan')}. ${colorize(folderName, 'green')}`);
+            console.log(`${colourise((index + 1).toString(), 'cyan')}. ${colourise(folderName, 'green')}`);
         });
     }
     
-    console.log(`${colorize('═'.repeat(50), 'cyan')}`);
+    console.log(`${colourise('═'.repeat(50), 'cyan')}`);
 }
 
 export function discoverAssetFolders(assetsPath: string): string[] {
@@ -423,7 +423,7 @@ export function discoverAssetFolders(assetsPath: string): string[] {
         const items = fs.readdirSync(dir, { withFileTypes: true });
         
         for (const item of items) {
-            if (item.isDirectory()) {
+            if (item.isDirectory() && !item.name.startsWith('_')) {
                 const fullPath = path.join(dir, item.name);
                 folders.push(fullPath);
                 // Don't recurse into subdirectories for now
@@ -439,12 +439,12 @@ export function showAnalysisPreview(folderPath: string): void {
     const fs = require('fs');
     const path = require('path');
     
-    console.log(`\n${colorize('ANALYSIS PREVIEW', 'bright')}`);
-    console.log(`${colorize('═'.repeat(50), 'cyan')}`);
-    console.log(`${colorize('Target Directory:', 'cyan')} ${folderPath}`);
+    console.log(`\n${colourise('ANALYSIS PREVIEW', 'bright')}`);
+    console.log(`${colourise('═'.repeat(50), 'cyan')}`);
+    console.log(`${colourise('Target Directory:', 'cyan')} ${folderPath}`);
     
     if (!fs.existsSync(folderPath)) {
-        console.log(`${colorize('Directory does not exist.', 'red')}`);
+        console.log(`${colourise('Directory does not exist.', 'red')}`);
         return;
     }
     
@@ -458,7 +458,7 @@ export function showAnalysisPreview(folderPath: string): void {
         for (const item of items) {
             const fullPath = path.join(dir, item.name);
             
-            if (item.isDirectory()) {
+            if (item.isDirectory() && !item.name.startsWith('_')) {
                 scanDirectory(fullPath);
             } else if (item.isFile()) {
                 const ext = path.extname(item.name).toLowerCase();
@@ -475,12 +475,12 @@ export function showAnalysisPreview(folderPath: string): void {
     
     scanDirectory(folderPath);
     
-    console.log(`${colorize('File Summary:', 'cyan')}`);
-    if (fileCounts.txt > 0) console.log(`  ${colorize('WhatsApp files:', 'green')} ${fileCounts.txt}`);
-    if (fileCounts.json > 0) console.log(`  ${colorize('Instagram files:', 'magenta')} ${fileCounts.json}`);
-    if (fileCounts.xml > 0) console.log(`  ${colorize('Android Messages files:', 'blue')} ${fileCounts.xml}`);
-    if (fileCounts.other > 0) console.log(`  ${colorize('Other files:', 'yellow')} ${fileCounts.other}`);
+    console.log(`${colourise('File Summary:', 'cyan')}`);
+    if (fileCounts.txt > 0) console.log(`  ${colourise('WhatsApp files:', 'green')} ${fileCounts.txt}`);
+    if (fileCounts.json > 0) console.log(`  ${colourise('Instagram files:', 'magenta')} ${fileCounts.json}`);
+    if (fileCounts.xml > 0) console.log(`  ${colourise('Android Messages files:', 'blue')} ${fileCounts.xml}`);
+    if (fileCounts.other > 0) console.log(`  ${colourise('Other files:', 'yellow')} ${fileCounts.other}`);
     
-    console.log(`${colorize('Total Size:', 'cyan')} ${formatBytes(totalSize)}`);
-    console.log(`${colorize('═'.repeat(50), 'cyan')}`);
+    console.log(`${colourise('Total Size:', 'cyan')} ${formatBytes(totalSize)}`);
+    console.log(`${colourise('═'.repeat(50), 'cyan')}`);
 }

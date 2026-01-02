@@ -254,9 +254,9 @@ export function parseWhatsApp(chatText: string): ParsedChat {
     // Second pass: collect actual participants
     for (const message of messages) {
         if (message.from && !message.isSystem) {
-            const normalized = normaliseParticipantName(message.from);
-            if (!potentialGroupNames.has(normalized)) {
-                participants.add(normalized);
+            const normalised = normaliseParticipantName(message.from);
+            if (!potentialGroupNames.has(normalised)) {
+                participants.add(normalised);
             }
         }
     }

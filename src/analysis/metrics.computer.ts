@@ -68,7 +68,7 @@ export async function computeMetrics(
   };
 
   const domainCounts = new Map<string, number>();
-  const normalizedParticipants = new Set<string>(Array.from(parsedChat.participants).map(normaliseParticipantName));
+  const normalisedParticipants = new Set<string>(Array.from(parsedChat.participants).map(normaliseParticipantName));
 
   // Pairwise reply latency: A -> B
   const lastByUser = new Map<string, Date>();
@@ -122,7 +122,7 @@ export async function computeMetrics(
       let mm: RegExpExecArray | null;
       while ((mm = unicodeMentionRegex.exec(rawText)) !== null) {
         const norm = normaliseParticipantName(mm[1]);
-        if (normalizedParticipants.has(norm)) mentionsFound.push(norm);
+        if (normalisedParticipants.has(norm)) mentionsFound.push(norm);
       }
       
       // Extract @mentions: @Name (where Name matches a participant)
@@ -131,7 +131,7 @@ export async function computeMetrics(
       while ((am = atMentionRegex.exec(rawText)) !== null) {
         const mentionText = am[1].trim();
         const norm = normaliseParticipantName(mentionText);
-        if (normalizedParticipants.has(norm)) {
+        if (normalisedParticipants.has(norm)) {
           mentionsFound.push(norm);
         }
       }
@@ -253,7 +253,7 @@ export async function computeMetrics(
       wmap.set(w, (wmap.get(w) ?? 0) + 1);
     }
 
-    // Track mentions per user (only participants) and normalized
+    // Track mentions per user (only participants) and normalised
     if (m.from && mentionsFound.length > 0) {
       const fromNorm = normaliseParticipantName(m.from);
       if (!perUserMentions.has(fromNorm)) perUserMentions.set(fromNorm, new Map());

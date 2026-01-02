@@ -57,14 +57,14 @@ export function findRelatedChats(chats: ParsedChat[]): Array<{ key: string; chat
     const groups = new Map<string, ParsedChat[]>();
   
     for (const chat of chats) {
-        // Create a normalized key based on participant names AND platform
-        const normalizedParticipants = Array.from(chat.participants)
+        // Create a normalised key based on participant names AND platform
+        const normalisedParticipants = Array.from(chat.participants)
         .map(name => normaliseParticipantName(name).toLowerCase())
         .sort()
         .join('|');
     
         // Include platform in the key to keep different platforms separate
-        const key = `${chat.platform}:${normalizedParticipants}`;
+        const key = `${chat.platform}:${normalisedParticipants}`;
     
         if (!groups.has(key)) {
         groups.set(key, []);

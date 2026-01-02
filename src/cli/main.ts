@@ -2,12 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { discoverChatFiles } from '../utils/file.utils';
 import { processMultipleChats } from './file-processor';
-import { normalizeParticipantNames } from '../analysis/name-normaliser';
+import { normaliseParticipantNames } from '../analysis/name-normaliser';
 import { computeHierarchicalAnalysis } from '../analysis/hierarchical.computer';
 import { generateHTMLReport } from '../html/html-generator';
 import { 
     ASCII_LOGO, 
-    colorize, 
+    colourise, 
     LoadingSpinner, 
     ProgressBar,
     logSuccess, 
@@ -142,19 +142,19 @@ export async function runCLI(args: string[]): Promise<void> {
             conversationTableData
         );
         
-        // Step 3: Normalize participant names
+        // Step 3: Normalise participant names
         logHeader("NORMALIZING PARTICIPANT NAMES");
         
-        const normalizedChats = await normalizeParticipantNames(parsedChats);
+        const normalisedChats = await normaliseParticipantNames(parsedChats);
         
-        logSuccess("Participant names normalized");
+        logSuccess("Participant names normalised");
         
         // Step 4: Compute hierarchical analysis
         logHeader("COMPUTING ANALYSIS");
         const analysisSpinner = new LoadingSpinner("Computing hierarchical analysis and metrics...");
         analysisSpinner.start();
         
-        const hierarchicalAnalysis = await computeHierarchicalAnalysis(normalizedChats);
+        const hierarchicalAnalysis = await computeHierarchicalAnalysis(normalisedChats);
         analysisSpinner.stop();
         
         logSuccess("Analysis computation complete");
@@ -188,7 +188,7 @@ export async function runCLI(args: string[]): Promise<void> {
         htmlSpinner.start();
         
         const htmlPath = outputPath.replace(/\.json$/, '.html');
-        const htmlContent = generateHTMLReport(hierarchicalAnalysis, undefined, normalizedChats);
+        const htmlContent = generateHTMLReport(hierarchicalAnalysis, undefined, normalisedChats);
         fs.writeFileSync(htmlPath, htmlContent, "utf8");
         htmlSpinner.stop();
         
@@ -198,28 +198,28 @@ export async function runCLI(args: string[]): Promise<void> {
         // Final summary
         logHeader("ANALYSIS COMPLETE");
         
-        console.log(`${colorize('Summary:', 'bright')}`);
-        console.log(`  ${colorize('Chats Analyzed:', 'cyan')} ${formatNumber(hierarchicalAnalysis.overview.totalChats)}`);
-        console.log(`  ${colorize('Total Messages:', 'cyan')} ${formatNumber(hierarchicalAnalysis.overview.totalMessages)}`);
-        console.log(`  ${colorize('Total Words:', 'cyan')} ${formatNumber(hierarchicalAnalysis.overview.totalWords)}`);
-        console.log(`  ${colorize('Total Characters:', 'cyan')} ${formatNumber(hierarchicalAnalysis.overview.totalCharacters)}`);
-        console.log(`  ${colorize('Total Emojis:', 'cyan')} ${formatNumber(hierarchicalAnalysis.overview.totalEmojis)}`);
-        console.log(`  ${colorize('Participants:', 'cyan')} ${formatNumber(hierarchicalAnalysis.overview.participants.length)}`);
-        console.log(`  ${colorize('Platforms:', 'cyan')} ${hierarchicalAnalysis.perPlatform.map(p => p.platform).join(', ')}`);
-        console.log(`  ${colorize('Time Spent:', 'cyan')} ${formatDuration(hierarchicalAnalysis.overview.timeSpentMs)}`);
+        console.log(`${colourise('Summary:', 'bright')}`);
+        console.log(`  ${colourise('Chats Analysed:', 'cyan')} ${formatNumber(hierarchicalAnalysis.overview.totalChats)}`);
+        console.log(`  ${colourise('Total Messages:', 'cyan')} ${formatNumber(hierarchicalAnalysis.overview.totalMessages)}`);
+        console.log(`  ${colourise('Total Words:', 'cyan')} ${formatNumber(hierarchicalAnalysis.overview.totalWords)}`);
+        console.log(`  ${colourise('Total Characters:', 'cyan')} ${formatNumber(hierarchicalAnalysis.overview.totalCharacters)}`);
+        console.log(`  ${colourise('Total Emojis:', 'cyan')} ${formatNumber(hierarchicalAnalysis.overview.totalEmojis)}`);
+        console.log(`  ${colourise('Participants:', 'cyan')} ${formatNumber(hierarchicalAnalysis.overview.participants.length)}`);
+        console.log(`  ${colourise('Platforms:', 'cyan')} ${hierarchicalAnalysis.perPlatform.map(p => p.platform).join(', ')}`);
+        console.log(`  ${colourise('Time Spent:', 'cyan')} ${formatDuration(hierarchicalAnalysis.overview.timeSpentMs)}`);
         
         console.log();
-        console.log(`${colorize('Output Files:', 'bright')}`);
-        console.log(`  ${colorize('JSON Analysis:', 'green')} ${outputPath}`);
-        console.log(`  ${colorize('HTML Report:', 'green')} ${htmlPath}`);
+        console.log(`${colourise('Output Files:', 'bright')}`);
+        console.log(`  ${colourise('JSON Analysis:', 'green')} ${outputPath}`);
+        console.log(`  ${colourise('HTML Report:', 'green')} ${htmlPath}`);
         
         console.log();
         logSuccess("Analysis completed successfully!");
-        console.log(`${colorize('Open the HTML report in your browser to explore the interactive dashboard.', 'dim')}`);
+        console.log(`${colourise('Open the HTML report in your browser to explore the interactive dashboard.', 'dim')}`);
         
     } catch (error) {
         logError("Error processing chat files");
-        console.log(`${colorize('Details:', 'dim')} ${error instanceof Error ? error.message : String(error)}`);
+        console.log(`${colourise('Details:', 'dim')} ${error instanceof Error ? error.message : String(error)}`);
         process.exit(1);
     }
 }

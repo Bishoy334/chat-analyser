@@ -62,8 +62,8 @@ export function discoverChatFiles(directoryPath: string): string[] {
       for (const item of items) {
         const fullPath = path.join(dir, item.name);
         
-        if (item.isDirectory()) {
-          // Recursively scan subdirectories
+        if (item.isDirectory() && !item.name.startsWith('_')) {
+          // Recursively scan subdirectories (skip directories starting with _)
           scanDirectory(fullPath);
         } else if (item.isFile()) {
           const ext = path.extname(item.name).toLowerCase();

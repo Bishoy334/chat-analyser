@@ -31,7 +31,7 @@ export async function computeHierarchicalAnalysis(parsedChats: ParsedChat[]): Pr
     const chatsByPlatform = new Map<'whatsapp' | 'instagram', ParsedChat[]>();
     for (const chat of parsedChats) {
         if (chat.platform === 'mixed') {
-            // For mixed chats, we need to analyze each message's platform
+            // For mixed chats, we need to analyse each message's platform
             // For now, let's treat mixed chats as separate entries
             continue;
         }
